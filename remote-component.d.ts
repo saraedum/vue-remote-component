@@ -1,12 +1,3 @@
-import Vue, { PluginFunction, VueConstructor } from 'vue';
+import { VueConstructor } from 'vue';
 
-
-interface InstallFunction extends PluginFunction<any> {
-  installed?: boolean;
-}
-export interface InstallableComponent extends VueConstructor<Vue> {
-  install: InstallFunction;
-}
-
-declare const RemoteComponent: InstallableComponent;
-export default RemoteComponent;
+export default class RemoteComponent extends VueConstructor<Vue> {}

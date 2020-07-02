@@ -1,88 +1,64 @@
-<script lang="ts">
-import Vue from 'vue';
-
-interface SampleData {
-  counter: number;
-  initCounter: number;
-  message: {
-    action: string | null;
-    amount: number | null;
-  };
-}
-
-export default Vue.extend({
-  name: 'RemoteComponent', // vue component name
-  data(): SampleData {
-    return {
-      counter: 5,
-      initCounter: 5,
-      message: {
-        action: null,
-        amount: null,
-      },
-    };
-  },
-  computed: {
-    changedBy() {
-      const { message } = this as SampleData;
-      if (!message.action) return 'initialized';
-      return `${message?.action} ${message.amount ?? ''}`.trim();
-    },
-  },
-  methods: {
-    increment(arg: Event | number): void {
-      const amount = (typeof arg !== 'number') ? 1 : arg;
-      this.counter += amount;
-      this.message.action = 'incremented by';
-      this.message.amount = amount;
-    },
-    decrement(arg: Event | number): void {
-      const amount = (typeof arg !== 'number') ? 1 : arg;
-      this.counter -= amount;
-      this.message.action = 'decremented by';
-      this.message.amount = amount;
-    },
-    reset(): void {
-      this.counter = this.initCounter;
-      this.message.action = 'reset';
-      this.message.amount = null;
-    },
-  },
-});
-</script>
-
 <template>
-  <div class="remote-component">
-    <p>The counter was {{ changedBy }} to <b>{{ counter }}</b>.</p>
-    <button @click="increment">
-      Click +1
-    </button>
-    <button @click="decrement">
-      Click -1
-    </button>
-    <button @click="increment(5)">
-      Click +5
-    </button>
-    <button @click="decrement(5)">
-      Click -5
-    </button>
-    <button @click="reset">
-      Reset
-    </button>
-  </div>
+  <component :is="component" v-if="component" v-bind="props" :ref="component" v-on="$listeners" />
 </template>
+<script lang="ts">
+import { VueConstructor } from "vue";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
-<style scoped>
-  .remote-component {
-    display: block;
-    width: 400px;
-    margin: 25px auto;
-    border: 1px solid #ccc;
-    background: #eaeaea;
-    text-align: center;
-    padding: 25px;
+@Component
+export default class RemoteComponent extends Vue {
+  @Prop({required: true, type: String}) public url!: string;
+  @Prop({required: true, type: Function}) public extract!: (library: any) => VueConstructor;
+  @Prop({required: false, type: Object, default: {}}) public props!: object;
+  @Prop({required: false, type: String, default: null}) public name!: string;
+
+  protected module : object | null = null;
+
+  private static async load(name: string, loader: () => Promise<object>) {
+    const globals = window as any;
+    if (!globals[name]) {
+        globals[name] = loader();
+    }
+    await Promise.resolve(globals[name]);
+    return globals[name];
   }
-  .remote-component p {
-    margin: 0 0 1em;
+
+  private get moduleName() {
+    if (this.name != null) {
+      return this.name;
+    }
+
+    const library = this.url
+      ?.split("/")
+      ?.reverse()[0]
+      ?.match(/^(.*?)\.umd/);
+
+    if (library == null) {
+      throw new Error(`${this.url} could not be parsed as a path pointing to an UMD module. Please provide an explicit module name.`);
+    }
+
+    return library[1];
   }
-</style>
+
+  protected get component() : VueConstructor | null {
+    if (this.module == null) {
+      return null;
+    }
+    return this.extract(this.module);
+  }
+
+  @Watch("url", { immediate: true })
+  protected async onUrlChanged() {
+    this.module = await RemoteComponent.load(this.moduleName, () => new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.async = true;
+      script.addEventListener("load", () => resolve());
+      script.addEventListener("error", () => {
+        reject(new Error(`Error loading ${this.url}`));
+      });
+      script.src = this.url;
+      document.head.appendChild(script);
+    }));
+  }
+}
+</script>
