@@ -1,3 +1,3 @@
-import { VueConstructor } from 'vue';
+import Vue from 'vue';
 
-export default class RemoteComponent extends VueConstructor<Vue> {}
+export default class RemoteComponent extends Vue {}
