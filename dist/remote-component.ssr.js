@@ -56,6 +56,21 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function");
@@ -173,7 +188,7 @@ function _typeof(obj) {
   return _typeof(obj);
 }
 
-function _defineProperty(obj, key, value) {
+function _defineProperty$1(obj, key, value) {
   if (key in obj) {
     Object.defineProperty(obj, key, {
       value: value,
@@ -340,7 +355,7 @@ function componentFactory(Component) {
         // typescript decorated data
         (options.mixins || (options.mixins = [])).push({
           data: function data() {
-            return _defineProperty({}, key, descriptor.value);
+            return _defineProperty$1({}, key, descriptor.value);
           }
         });
       }
@@ -512,27 +527,12 @@ var RemoteComponent = RemoteComponent_1 = /*#__PURE__*/function (_Vue) {
     key: "onUrlChanged",
     value: function () {
       var _onUrlChanged = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var _this2 = this;
-
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
                 _context.next = 2;
-                return RemoteComponent_1.load(this.moduleName, function () {
-                  return new Promise(function (resolve, reject) {
-                    var script = document.createElement("script");
-                    script.async = true;
-                    script.addEventListener("load", function () {
-                      return resolve();
-                    });
-                    script.addEventListener("error", function () {
-                      reject(new Error("Error loading ".concat(_this2.url)));
-                    });
-                    script.src = _this2.url;
-                    document.head.appendChild(script);
-                  });
-                });
+                return RemoteComponent_1.load(this.moduleName, this.url);
 
               case 2:
                 this.module = _context.sent;
@@ -578,27 +578,35 @@ var RemoteComponent = RemoteComponent_1 = /*#__PURE__*/function (_Vue) {
       return this.extract(this.module);
     }
   }], [{
-    key: "load",
+    key: "loadRequireJS",
     value: function () {
-      var _load = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(name, loader) {
-        var globals;
+      var _loadRequireJS = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(requirejs, name, url) {
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                globals = window;
-
-                if (!globals[name]) {
-                  globals[name] = loader();
+                if (url.endsWith('.js')) {
+                  _context2.next = 2;
+                  break;
                 }
 
-                _context2.next = 4;
-                return Promise.resolve(globals[name]);
+                throw Error("url must end with .js to be loaded through RequireJS");
 
-              case 4:
-                return _context2.abrupt("return", globals[name]);
+              case 2:
+                requirejs.config({
+                  paths: _defineProperty({}, name, url.substr(0, url.length - 3))
+                });
+                _context2.next = 5;
+                return new Promise(function (resolve) {
+                  requirejs([name], function (module) {
+                    resolve(module);
+                  });
+                });
 
               case 5:
+                return _context2.abrupt("return", _context2.sent);
+
+              case 6:
               case "end":
                 return _context2.stop();
             }
@@ -606,7 +614,89 @@ var RemoteComponent = RemoteComponent_1 = /*#__PURE__*/function (_Vue) {
         }, _callee2);
       }));
 
-      function load(_x, _x2) {
+      function loadRequireJS(_x, _x2, _x3) {
+        return _loadRequireJS.apply(this, arguments);
+      }
+
+      return loadRequireJS;
+    }()
+  }, {
+    key: "loadBrowser",
+    value: function () {
+      var _loadBrowser = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(name, url) {
+        var script, load, globals;
+        return regeneratorRuntime.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                script = document.createElement("script");
+                load = new Promise(function (resolve) {
+                  script.addEventListener("load", function () {
+                    return resolve();
+                  });
+                });
+                script.async = true;
+                script.src = url;
+                document.head.appendChild(script);
+                _context3.next = 7;
+                return load;
+
+              case 7:
+                globals = window;
+                return _context3.abrupt("return", globals[name]);
+
+              case 9:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }));
+
+      function loadBrowser(_x4, _x5) {
+        return _loadBrowser.apply(this, arguments);
+      }
+
+      return loadBrowser;
+    }()
+  }, {
+    key: "load",
+    value: function () {
+      var _load = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(name, url) {
+        var globals;
+        return regeneratorRuntime.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                globals = window;
+
+                if (!(typeof globals.requirejs == 'function')) {
+                  _context4.next = 7;
+                  break;
+                }
+
+                _context4.next = 4;
+                return RemoteComponent_1.loadRequireJS(globals.requirejs, name, url);
+
+              case 4:
+                return _context4.abrupt("return", _context4.sent);
+
+              case 7:
+                _context4.next = 9;
+                return RemoteComponent_1.loadBrowser(name, url);
+
+              case 9:
+                return _context4.abrupt("return", _context4.sent);
+
+              case 10:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }));
+
+      function load(_x6, _x7) {
         return _load.apply(this, arguments);
       }
 
@@ -743,7 +833,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-4f7293a9";
+var __vue_module_identifier__ = "data-v-7e6e3caf";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

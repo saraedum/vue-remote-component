@@ -371,15 +371,41 @@ let RemoteComponent = RemoteComponent_1 = class RemoteComponent extends Vue {
     this.module = null;
   }
 
-  static async load(name, loader) {
+  static async loadRequireJS(requirejs, name, url) {
+    if (!url.endsWith('.js')) throw Error("url must end with .js to be loaded through RequireJS");
+    requirejs.config({
+      paths: {
+        [name]: url.substr(0, url.length - 3)
+      }
+    });
+    return await new Promise(resolve => {
+      requirejs([name], function (module) {
+        resolve(module);
+      });
+    });
+  }
+
+  static async loadBrowser(name, url) {
+    const script = document.createElement("script");
+    const load = new Promise(resolve => {
+      script.addEventListener("load", () => resolve());
+    });
+    script.async = true;
+    script.src = url;
+    document.head.appendChild(script);
+    await load;
+    const globals = window;
+    return globals[name];
+  }
+
+  static async load(name, url) {
     const globals = window;
 
-    if (!globals[name]) {
-      globals[name] = loader();
+    if (typeof globals.requirejs == 'function') {
+      return await RemoteComponent_1.loadRequireJS(globals.requirejs, name, url);
+    } else {
+      return await RemoteComponent_1.loadBrowser(name, url);
     }
-
-    await Promise.resolve(globals[name]);
-    return globals[name];
   }
 
   get moduleName() {
@@ -407,16 +433,7 @@ let RemoteComponent = RemoteComponent_1 = class RemoteComponent extends Vue {
   }
 
   async onUrlChanged() {
-    this.module = await RemoteComponent_1.load(this.moduleName, () => new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.async = true;
-      script.addEventListener("load", () => resolve());
-      script.addEventListener("error", () => {
-        reject(new Error(`Error loading ${this.url}`));
-      });
-      script.src = this.url;
-      document.head.appendChild(script);
-    }));
+    this.module = await RemoteComponent_1.load(this.moduleName, this.url);
   }
 
 };
