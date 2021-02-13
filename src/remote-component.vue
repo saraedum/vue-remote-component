@@ -14,13 +14,43 @@ export default class RemoteComponent extends Vue {
 
   protected module : object | null = null;
 
-  private static async load(name: string, loader: () => Promise<object>) {
+  private static async loadRequireJS(requirejs: any, name: string, url: string) {
+    if (!url.endsWith('.js'))
+      throw Error("url must end with .js to be loaded through RequireJS");
+
+    requirejs.config({
+      paths: {
+        [name]: url.substr(0, url.length - 3),
+      }
+    });
+    return await new Promise((resolve) => {
+      requirejs([name], function(module: any) {
+        resolve(module);
+      });
+    });
+  }
+
+  private static async loadBrowser(name: string, url: string) {
+    const script = document.createElement("script");
+    const load = new Promise((resolve) => {
+      script.addEventListener("load", () => resolve());
+    });
+    script.async = true;
+    script.src = url;
+    document.head.appendChild(script);
+    await load;
+
     const globals = window as any;
-    if (!globals[name]) {
-        globals[name] = loader();
-    }
-    await Promise.resolve(globals[name]);
     return globals[name];
+  }
+
+  private static async load(name: string, url: string) {
+    const globals = window as any;
+    if (typeof globals.requirejs == 'function') {
+      return await RemoteComponent.loadRequireJS(globals.requirejs, name, url);
+    } else {
+      return await RemoteComponent.loadBrowser(name, url);
+    }
   }
 
   private get moduleName() {
@@ -49,16 +79,7 @@ export default class RemoteComponent extends Vue {
 
   @Watch("url", { immediate: true })
   protected async onUrlChanged() {
-    this.module = await RemoteComponent.load(this.moduleName, () => new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.async = true;
-      script.addEventListener("load", () => resolve());
-      script.addEventListener("error", () => {
-        reject(new Error(`Error loading ${this.url}`));
-      });
-      script.src = this.url;
-      document.head.appendChild(script);
-    }));
+    this.module = await RemoteComponent.load(this.moduleName, this.url);
   }
 }
 </script>
