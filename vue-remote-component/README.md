@@ -62,3 +62,14 @@ using Vue.js components from NPM without having to distribute any JavaScript
 extension. See
 [ipyvue-remote-component](https://github.com/saraedum/ipyvue-remote-component)
 for details.
+
+## Similar Projects
+
+The author is aware of several projects that try to achieve something very similar:
+
+* [vue-remote-import](https://www.npmjs.com/package/vue-remote-import)
+* [vue-external-component](https://www.npmjs.com/package/vue-external-component)
+
+These projects seem to be quite similar to the vue-remote-component. However,
+they don't seem to work in a [require.js](https://requirejs.org/) application
+such as a Jupyter Notebook.
