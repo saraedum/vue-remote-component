@@ -28,7 +28,7 @@ There are several (identical) demo applications. One in the source tree:
 
 ```
 cd vue-remote-component
-yarn
+yarn install --check-files
 yarn serve
 ```
 
