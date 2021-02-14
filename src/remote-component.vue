@@ -32,7 +32,7 @@ export default class RemoteComponent extends Vue {
 
   private static async loadBrowser(name: string, url: string) {
     const script = document.createElement("script");
-    const load = new Promise((resolve) => {
+    const load = new Promise<void>((resolve) => {
       script.addEventListener("load", () => resolve());
     });
     script.async = true;
