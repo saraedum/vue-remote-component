@@ -1,6 +1,6 @@
 {
   "name": "vue-remote-component",
-    "version": "1.0.3",
+      "version": "1.1.0",
   "description": "",
   "main": "dist/vue-remote-component.ssr.js",
   "browser": "dist/vue-remote-component.ssr.js",
