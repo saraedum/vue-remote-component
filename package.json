@@ -2,14 +2,14 @@
   "name": "vue-remote-component",
   "version": "1.0.1",
   "description": "",
-  "main": "dist/remote-component.ssr.js",
-  "browser": "dist/remote-component.esm.js",
-  "module": "dist/remote-component.esm.js",
-  "unpkg": "dist/remote-component.min.js",
-  "types": "remote-component.d.ts",
+  "main": "dist/vue-remote-component.ssr.js",
+  "browser": "dist/vue-remote-component.esm.js",
+  "module": "dist/vue-remote-component.esm.js",
+  "unpkg": "dist/vue-remote-component.min.js",
+  "types": "vue-remote-component.d.ts",
   "files": [
     "dist/*",
-    "remote-component.d.ts",
+    "vue-remote-component.d.ts",
     "src/**/*.vue"
   ],
   "scripts": {
