@@ -10,7 +10,8 @@
   "files": [
     "dist/*",
     "vue-remote-component.d.ts",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "LICENSE"
   ],
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
