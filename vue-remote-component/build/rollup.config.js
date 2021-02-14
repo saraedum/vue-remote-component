@@ -5,7 +5,7 @@ import vue from 'rollup-plugin-vue';
 import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import replace from '@rollup/plugin-replace';
-import babel from 'rollup-plugin-babel';
+import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 import minimist from 'minimist';
 import typescript from "rollup-plugin-typescript2";
@@ -41,7 +41,7 @@ const baseConfig = {
       useTsconfigDeclarationDir: true
     },
     vue: {
-      css: true,
+      css: false,
       template: {
         isProduction: true,
       },
@@ -49,23 +49,19 @@ const baseConfig = {
     babel: {
       exclude: 'node_modules/**',
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+      plugins: [],
     },
   },
 };
 
 // ESM/UMD/IIFE shared settings: externals
 // Refer to https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
-const external = [
-  // list external dependencies, exactly the way it is written in the import statement.
-  // eg. 'jquery'
-  'vue',
-];
+const vueExternal = id => id === "vue";
+const babelExternal = id => id.includes('@babel/runtime')
 
 // UMD/IIFE shared settings: output.globals
 // Refer to https://rollupjs.org/guide/en#output-globals for details
 const globals = {
-  // Provide global variable names to replace your external imports
-  // eg. jquery: '$'
   vue: 'Vue',
 };
 
@@ -74,9 +70,9 @@ const buildFormats = [];
 if (!argv.format || argv.format === 'es') {
   const esConfig = {
     ...baseConfig,
-    external,
+    external: id => vueExternal(id) || babelExternal(id),
     output: {
-      file: 'dist/remote-component.esm.js',
+      file: 'dist/vue-remote-component.esm.js',
       format: 'esm',
       exports: 'named',
       sourcemap: true,
@@ -100,6 +96,8 @@ if (!argv.format || argv.format === 'es') {
             },
           ],
         ],
+        babelHelpers: 'runtime',
+        plugins: [...baseConfig.plugins.babel.plugins, ['@babel/plugin-transform-runtime', { useESModules: true }]],
       }),
       commonjs(),
     ],
@@ -110,10 +108,10 @@ if (!argv.format || argv.format === 'es') {
 if (!argv.format || argv.format === 'cjs') {
   const umdConfig = {
     ...baseConfig,
-    external,
+    external: id => vueExternal(id) || babelExternal(id),
     output: {
       compact: true,
-      file: 'dist/remote-component.ssr.js',
+      file: 'dist/vue-remote-component.ssr.js',
       format: 'cjs',
       name: 'RemoteComponent',
       exports: 'named',
@@ -132,7 +130,11 @@ if (!argv.format || argv.format === 'cjs') {
           optimizeSSR: true,
         },
       }),
-      babel(baseConfig.plugins.babel),
+      babel({
+        ...baseConfig.plugins.babel,
+        babelHelpers: 'runtime',
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: false }]],
+      }),
       commonjs(),
     ],
   };
@@ -142,10 +144,10 @@ if (!argv.format || argv.format === 'cjs') {
 if (!argv.format || argv.format === 'iife') {
   const unpkgConfig = {
     ...baseConfig,
-    external,
+    external: id => vueExternal(id),
     output: {
       compact: true,
-      file: 'dist/remote-component.min.js',
+      file: 'dist/vue-remote-component.min.js',
       format: 'iife',
       name: 'RemoteComponent',
       exports: 'named',
@@ -158,7 +160,10 @@ if (!argv.format || argv.format === 'iife') {
       typescript(baseConfig.plugins.typescript),
       ...baseConfig.plugins.preVue,
       vue(baseConfig.plugins.vue),
-      babel(baseConfig.plugins.babel),
+      babel({
+        ...baseConfig.plugins.babel,
+        babelHelpers: 'bundled',
+      }),
       commonjs(),
       terser({
         output: {
