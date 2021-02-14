@@ -4,6 +4,15 @@ vue-remote-component Change Log
 
 .. current developments
 
+v1.1.0
+====================
+
+**Added:**
+
+* support RequireJS pages
+
+
+
 v1.0.3
 ====================
 

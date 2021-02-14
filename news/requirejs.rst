@@ -1,3 +1,0 @@
-**Added:**
-
-* support RequireJS pages
