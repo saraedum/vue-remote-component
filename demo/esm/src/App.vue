@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <remote-component :extract="extract" :url="url" :props="props" />
+    <remote-component :extract="extract" :url="url" :data="plots" />
   </div>
 </template>
 
@@ -18,11 +18,8 @@ export default class App extends Vue {
     return library.Plotly;
   }
 
-  get props() {
-    return {
-      data: [{ x: [0, 1, 2, 3], y: [1, 3, 3, 7],
-      type: 'scatter' }]
-    };
+  get plots() {
+    return [{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }]
   }
 
   url = "https://unpkg.com/vue-plotly@^1/dist/vue-plotly.umd.min.js";

@@ -10,7 +10,7 @@ Import and register `RemoteComponent from "vue-remote-component"`, then the foll
 ```
 <remote-component
   url="https://unpkg.com/vue-plotly@^1/dist/vue-plotly.umd.min.js"
-  :props="{ data: [{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }] }"
+  :data="[{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }]"
   :extract="library => library.Plotly" />
 ```
 

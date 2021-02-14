@@ -1,5 +1,5 @@
 <template>
-  <component :is="component" v-if="component" v-bind="props" :ref="component" v-on="$listeners" />
+  <component :is="component" v-if="component" v-bind="{...$attrs, ...props}" :ref="component" v-on="$listeners" />
 </template>
 <script lang="ts">
 import { VueConstructor } from "vue";
