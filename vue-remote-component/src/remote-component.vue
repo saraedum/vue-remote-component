@@ -17,10 +17,18 @@ export default class RemoteComponent extends Vue {
   @Prop({required: true, type: Function}) public extract!: (library: any) => VueConstructor;
   @Prop({required: false, type: Object, default: () => {}}) public props!: object;
   @Prop({required: false, type: String, default: null}) public name!: string;
-  @Prop({required: false, type: String, default: "div"}) public tag!: string;
+  @Prop({required: false, type: Function, default: RemoteComponent.showMessage}) public tag!: (mesage: string) => any;
 
   protected state : State = State.LOADING;
   protected module : object | null = null;
+
+  private static showMessage(message: string) {
+    return {
+      render(h: Vue.CreateElement) {
+        return h("div", message);
+      }
+    };
+  }
 
   private static async loadRequireJS(requirejs: any, name: string, url: string) {
     if (!url.endsWith('.js'))
@@ -79,12 +87,12 @@ export default class RemoteComponent extends Vue {
     return library[1];
   }
 
-  protected get component() : VueConstructor | null | any {
+  protected get component() {
     if (this.state === State.LOADING) {
-      return { render: (h: Vue.CreateElement) => h(this.tag, "⌛"), };
+      return this.tag("⌛");
     }
     if (this.state === State.ERROR) {
-      return { render: (h: Vue.CreateElement) => h(this.tag, "🚫"), };
+      return this.tag("🚫");
     }
     return this.extract(this.module);
   }
