@@ -4,6 +4,15 @@ vue-remote-component Change Log
 
 .. current developments
 
+v1.3.0
+====================
+
+**Added:**
+
+* Show a spinner while the component is loading. Show an error indicator when loading failed.
+
+
+
 v1.2.0
 ====================
 
