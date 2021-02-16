@@ -63,6 +63,16 @@ extension. See
 [ipyvue-remote-component](https://github.com/saraedum/ipyvue-remote-component)
 for details.
 
+## Limitations
+
+* *Events* on the remote component cannot be bound yet. This should be trivial to
+  add so please open an issue if that's something that you need. PRs are also
+  welcome.
+
+* *Slots* on the remote component cannot be used yet. This should not be hard to
+  add so please open an issue if that's something that you need. PRs are also
+  welcome.
+
 ## Similar Projects
 
 The author is aware of several projects that try to achieve something very similar:
