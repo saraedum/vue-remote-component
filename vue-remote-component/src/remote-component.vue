@@ -17,6 +17,7 @@ export default class RemoteComponent extends Vue {
   @Prop({required: true, type: Function}) public extract!: (library: any) => VueConstructor;
   @Prop({required: false, type: Object, default: () => {}}) public props!: object;
   @Prop({required: false, type: String, default: null}) public name!: string;
+  @Prop({required: false, type: String, default: null}) public integrity!: string | null;
   @Prop({required: false, type: Function, default: RemoteComponent.showMessage}) public tag!: (mesage: string) => any;
 
   protected state : State = State.LOADING;
@@ -30,23 +31,32 @@ export default class RemoteComponent extends Vue {
     };
   }
 
-  private static async loadRequireJS(requirejs: any, name: string, url: string) {
+  private static async loadRequireJS(requirejs: any, name: string, url: string, integrity: string | null) {
     if (!url.endsWith('.js'))
       throw Error("url must end with .js to be loaded through RequireJS");
 
     requirejs.config({
       paths: {
         [name]: url.substr(0, url.length - 3),
-      }
+      },
+      onNodeCreated: function(node: HTMLScriptElement, _config: any, moduleName: string, _url: string) {
+        if (moduleName === name) {
+          if (integrity)
+            node.integrity = integrity;
+          node.crossOrigin = "anonymous";
+        }
+      },
     });
-    return await new Promise((resolve) => {
+    return await new Promise((resolve, reject) => {
       requirejs([name], function(module: any) {
         resolve(module);
+      }, function(err: any) {
+        reject(err);
       });
     });
   }
 
-  private static async loadBrowser(name: string, url: string) {
+  private static async loadBrowser(name: string, url: string, integrity: string | null) {
     const script = document.createElement("script");
     const load = new Promise<void>((resolve, reject) => {
       script.addEventListener("load", () => resolve());
@@ -54,6 +64,9 @@ export default class RemoteComponent extends Vue {
     });
     script.async = true;
     script.src = url;
+    if (integrity)
+      script.integrity = integrity;
+    script.crossOrigin = "anonymous";
     document.head.appendChild(script);
     await load;
 
@@ -61,12 +74,12 @@ export default class RemoteComponent extends Vue {
     return globals[name];
   }
 
-  private static async load(name: string, url: string) {
+  private static async load(name: string, url: string, integrity: string | null) {
     const globals = window as any;
     if (typeof globals.requirejs == 'function') {
-      return await RemoteComponent.loadRequireJS(globals.requirejs, name, url);
+      return await RemoteComponent.loadRequireJS(globals.requirejs, name, url, integrity);
     } else {
-      return await RemoteComponent.loadBrowser(name, url);
+      return await RemoteComponent.loadBrowser(name, url, integrity);
     }
   }
 
@@ -101,7 +114,7 @@ export default class RemoteComponent extends Vue {
   protected async onUrlChanged() {
     this.state = State.LOADING;
     try {
-      this.module = await RemoteComponent.load(this.moduleName, this.url);
+      this.module = await RemoteComponent.load(this.moduleName, this.url, this.integrity);
       this.state = State.READY;
     } catch {
       this.state = State.ERROR;
