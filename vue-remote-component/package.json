@@ -33,7 +33,7 @@
     "@rollup/plugin-commonjs": "^17.1.0",
     "@rollup/plugin-node-resolve": "^11.1.1",
     "@rollup/plugin-replace": "^2.3.2",
-    "@vue/cli": "^4.5.11",
+    "@vue/cli": "~5.0.1",
     "@vue/cli-plugin-babel": "~5.0.1",
     "@vue/cli-plugin-typescript": "~5.0.1",
     "@vue/cli-service": "^5",
