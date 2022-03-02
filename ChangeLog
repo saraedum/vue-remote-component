@@ -4,6 +4,15 @@ vue-remote-component Change Log
 
 .. current developments
 
+v1.4.1
+====================
+
+**Fixed:**
+
+* Upgrade dependencies for latest security fixes.
+
+
+
 v1.4.0
 ====================
 
