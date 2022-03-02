@@ -2,24 +2,23 @@
   "name": "vue-remote-component",
   "version": "1.4.0",
   "description": "",
+  "scripts": {
+    "serve": "vue-cli-service serve dev/serve.ts",
+    "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
+    "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
+    "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
+    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
+  },
   "main": "dist/vue-remote-component.ssr.js",
-  "browser": "dist/vue-remote-component.ssr.js",
   "module": "dist/vue-remote-component.esm.js",
+  "browser": "dist/vue-remote-component.ssr.js",
   "unpkg": "dist/vue-remote-component.min.js",
-  "types": "vue-remote-component.d.ts",
   "files": [
     "dist/*",
     "vue-remote-component.d.ts",
     "src/**/*.vue",
     "LICENSE"
   ],
-  "scripts": {
-    "serve": "vue-cli-service serve dev/serve.ts",
-    "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
-    "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
-    "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
-    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
-  },
   "dependencies": {
     "@babel/runtime": "^7.12.13",
     "vue-class-component": "^7.2.3",
@@ -35,9 +34,9 @@
     "@rollup/plugin-node-resolve": "^11.1.1",
     "@rollup/plugin-replace": "^2.3.2",
     "@vue/cli": "^4.5.11",
-    "@vue/cli-plugin-babel": "^4.3.1",
-    "@vue/cli-plugin-typescript": "^4.3.1",
-    "@vue/cli-service": "^4.3.1",
+    "@vue/cli-plugin-babel": "~5.0.1",
+    "@vue/cli-plugin-typescript": "~5.0.1",
+    "@vue/cli-service": "^5",
     "cross-env": "^7.0.2",
     "minimist": "^1.2.5",
     "postcss": "^8.2.6",
@@ -46,7 +45,7 @@
     "rollup-plugin-typescript2": "^0.29.0",
     "rollup-plugin-vue": "^5.0.0",
     "tslib": "^2.1.0",
-    "typescript": "^4.1.5",
+    "typescript": "~4.5.5",
     "vue": "^2.6.11",
     "vue-template-compiler": "^2.6.11"
   },
@@ -55,5 +54,6 @@
   },
   "engines": {
     "node": ">=10"
-  }
+  },
+  "types": "vue-remote-component.d.ts"
 }
