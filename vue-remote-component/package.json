@@ -1,6 +1,6 @@
 {
   "name": "vue-remote-component",
-  "version": "1.4.0",
+    "version": "1.4.1",
   "description": "",
   "scripts": {
     "serve": "vue-cli-service serve dev/serve.ts",
