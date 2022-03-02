@@ -1,15 +1,15 @@
 **Added:**
 
-* <news item>
+* Added <news item>
 
 **Changed:**
 
-* <news item>
+* Changed <news item>
 
 **Removed:**
 
-* <news item>
+* Removed <news item>
 
 **Fixed:**
 
-* <news item>
+* Fixed <news item>
