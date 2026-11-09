@@ -1,0 +1,48 @@
+name: Release
+
+# Publishes vue-remote-component to npm when a version tag such as 2.0.0 is
+# pushed. Publishing uses npm trusted publishing, so no npm token is needed;
+# see "Releasing" in the README for the one-time setup.
+
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+*"]
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      # Create the GitHub Release.
+      contents: write
+      # Authenticate to npm with trusted publishing.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: yarn
+          registry-url: https://registry.npmjs.org
+      - name: Check that the tag matches the package version
+        run: |
+          version=$(node -p "require('./vue-remote-component/package.json').version")
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version $version in vue-remote-component/package.json"
+            exit 1
+          fi
+      - run: yarn install --frozen-lockfile
+      - run: yarn test
+      - run: yarn build
+      - name: Publish to npm
+        working-directory: vue-remote-component
+        # Pre-releases such as 2.0.0-rc.1 must not become "latest".
+        run: npm publish ${{ contains(github.ref_name, '-') && '--tag next' || '' }}
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes ${{ contains(github.ref_name, '-') && '--prerelease' || '' }}

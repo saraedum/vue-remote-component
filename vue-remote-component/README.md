@@ -71,6 +71,32 @@ yarn
 yarn demo
 ```
 
+## Releasing
+
+Releases are published to npm by GitHub Actions when a version tag is pushed:
+
+```
+yarn workspace vue-remote-component version --new-version 2.0.0 --no-git-tag-version
+git commit -am "Release 2.0.0"
+git tag 2.0.0
+git push origin master 2.0.0
+```
+
+The release workflow checks that the tag matches the version in
+`vue-remote-component/package.json`, runs the tests, publishes to npm, and
+creates a GitHub Release with notes generated from the merged pull requests.
+Edit those notes to point out breaking changes. Tags with a pre-release suffix
+such as `2.0.0-rc.1` are published under the npm tag `next` and marked as
+pre-releases.
+
+One-time setup on the hosting side:
+
+* On npmjs.com, add a trusted publisher to the package settings: GitHub
+  Actions, owner `saraedum`, repository `vue-remote-component`, workflow
+  `release.yml`. No npm token is needed.
+* On GitHub, set Settings → Pages → Source to "GitHub Actions" so the demo can
+  be deployed.
+
 ## Use in Jupyter Notebooks & JupyterLab
 
 This package was originally meant to be used with

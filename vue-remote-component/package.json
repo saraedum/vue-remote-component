@@ -1,7 +1,12 @@
 {
   "name": "vue-remote-component",
   "version": "1.4.1",
-  "description": "",
+  "description": "Load a Vue component at runtime from a URL",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saraedum/vue-remote-component.git",
+    "directory": "vue-remote-component"
+  },
   "scripts": {
     "dev": "vite dev --config vite.config.mts dev",
     "build": "vite build && tsc -p tsconfig.build.json",
