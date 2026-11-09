@@ -27,7 +27,6 @@ jobs:
         with:
           node-version: 24
           cache: yarn
-          registry-url: https://registry.npmjs.org
       - name: Check that the tag matches the package version
         run: |
           version=$(node -p "require('./vue-remote-component/package.json').version")

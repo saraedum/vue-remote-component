@@ -120,7 +120,7 @@ One-time setup on the hosting side:
 
 * On npmjs.com, add a trusted publisher to the package settings: GitHub
   Actions, owner `saraedum`, repository `vue-remote-component`, workflow
-  `release.yml`. No npm token is needed.
+  `deploy.yml`. No npm token is needed.
 * On GitHub, set Settings → Pages → Source to "GitHub Actions" so the demo can
   be deployed.
 
