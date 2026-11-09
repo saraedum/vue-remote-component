@@ -3,6 +3,13 @@
 A `<remote-component>` loads a Vue.js component at runtime from an URL, e.g.,
 from https://unpkg.com/.
 
+## Maintenance Status
+
+This project is in maintenance-only mode. No new features are planned, but it
+is kept working with current versions of its dependencies. That maintenance is
+mostly vibe coded, i.e., the changes are largely written by an AI coding
+assistant.
+
 ## Example Usage
 
 Import and register `RemoteComponent from "vue-remote-component"`, then the following template shows a [Plotly](https://plotly.com) graph:
@@ -29,9 +36,28 @@ Other dependencies of the remote component must be provided the same way; the
 Plotly component above expects a global `Plotly`, e.g., from
 https://cdn.jsdelivr.net/npm/plotly.js-basic-dist-min@2.35.3/plotly-basic.min.js.
 
+## Props
+
+* `url` (required): the URL of the UMD bundle. It is loaded with a `<script>`
+  tag or, when the page uses [RequireJS](https://requirejs.org/), with
+  RequireJS, in which case the URL must end in `.js`.
+* `extract` (required): a function that receives the loaded library and returns
+  the component to render.
+* `name`: the global variable (or RequireJS module) the bundle defines.
+  Defaults to the file name up to `.umd`, e.g., `vue-plotly` for
+  `.../vue-plotly.umd.min.js`.
+* `integrity`: a [subresource
+  integrity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)
+  hash the bundle must match.
+* `props`: an object of props to pass to the component. Any other attributes
+  and event listeners on the `<remote-component>` are passed on as well.
+* `tag`: a function that turns a message into a component; it renders ⌛ while
+  loading and 🚫 if loading fails.
+
 ## Building this Package
 
-This repository is a yarn workspace. From its root:
+This repository is a yarn workspace and requires Node.js 22.12 or newer. From
+its root:
 
 ```
 yarn
@@ -64,7 +90,8 @@ yarn build
 firefox demo/iife/index.html
 ```
 
-Finally, a Vite based application using the ESM build:
+Finally, a Vite based application using the ESM build, which is also deployed
+to GitHub Pages on every push to `master`:
 
 ```
 yarn
@@ -104,13 +131,10 @@ This package was originally meant to be used with
 using Vue.js components from NPM without having to distribute any JavaScript
 extension. See
 [ipyvue-remote-component](https://github.com/saraedum/ipyvue-remote-component)
-for details.
+for details. Note that ipyvue-remote-component currently uses version 1.x of
+this package, i.e., Vue 2 and ipyvue 1.x.
 
 ## Limitations
-
-* *Events* on the remote component cannot be bound yet. This should be trivial to
-  add so please open an issue if that's something that you need. PRs are also
-  welcome.
 
 * *Slots* on the remote component cannot be used yet. This should not be hard to
   add so please open an issue if that's something that you need. PRs are also
