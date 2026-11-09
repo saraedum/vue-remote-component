@@ -1,8 +1,8 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-  <script src="https://unpkg.com/regenerator-runtime@^0.13.1/runtime.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-basic-dist@2.35.3/plotly-basic.min.js"></script>
   <script src="../../vue-remote-component/dist/vue-remote-component.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
   <title>&lt;remote-component&gt; as loaded from unpkg</title>
@@ -11,23 +11,25 @@
   <div id="app">
     <remote-component
       :url="url"
+      name="VuePlotly"
+      :integrity="integrity"
       :extract="extract"
       :data="data"
+      :layout="{}"
     />
   </div>
   <script>
-  var app = new Vue({
-    el: '#app',
+  Vue.createApp({
     components: {
       RemoteComponent: RemoteComponent.default,
     },
-    data: {
-      extract: library => library.Plotly,
+    data: () => ({
+      extract: library => library.VuePlotly,
       data: [{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }],
-      url: "https://unpkg.com/vue-plotly@1.1.0/dist/vue-plotly.umd.min.js",
-      integrity: "sha384-3YjbENL4Izchmbn7RCdWL5tHYGPP7fy2B/vzCgBd3corbolRfPgjimXK4JEwGpYg",
-    }
-  })
+      url: "https://unpkg.com/@clalarco/vue3-plotly@0.1.5/dist/plotly-vue-ts.umd.js",
+      integrity: "sha384-sHaSiIoiSEUXfQc8yD3yMmwaxBjjHHUtwf7kZxQwdaV4O9ocGYgVjVtpDTd3B3Tf",
+    }),
+  }).mount('#app');
   </script>
 </body>
 </html>

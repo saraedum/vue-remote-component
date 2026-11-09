@@ -1,8 +1,7 @@
-import Vue from 'vue'
+import * as Vue from 'vue'
 import App from './App.vue'
 
-Vue.config.productionTip = false
+// Remote UMD components resolve their "vue" import from this global.
+(window as any).Vue = Vue
 
-new Vue({
-  render: h => h(App),
-}).$mount('#app')
+Vue.createApp(App).mount('#app')

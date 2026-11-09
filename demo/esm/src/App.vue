@@ -1,28 +1,18 @@
 <template>
   <div id="app">
-    <remote-component :extract="extract" :url="url" :data="plots" integrity="integrity" />
+    <remote-component :extract="extract" :url="url" name="VuePlotly" :data="plots" :layout="{}" :integrity="integrity" />
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+<script setup lang="ts">
 import RemoteComponent from "vue-remote-component";
 
-@Component({
-  components: {
-    RemoteComponent
-  },
-})
-export default class App extends Vue {
-  extract(library: any) {
-    return library.Plotly;
-  }
-
-  get plots() {
-    return [{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }]
-  }
-
-  url = "https://unpkg.com/vue-plotly@1.1.0/dist/vue-plotly.umd.min.js";
-  integrity = "sha384-3YjbENL4Izchmbn7RCdWL5tHYGPP7fy2B/vzCgBd3corbolRfPgjimXK4JEwGpYg";
+function extract(library: any) {
+  return library.VuePlotly;
 }
+
+const plots = [{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }];
+
+const url = "https://unpkg.com/@clalarco/vue3-plotly@0.1.5/dist/plotly-vue-ts.umd.js";
+const integrity = "sha384-sHaSiIoiSEUXfQc8yD3yMmwaxBjjHHUtwf7kZxQwdaV4O9ocGYgVjVtpDTd3B3Tf";
 </script>
