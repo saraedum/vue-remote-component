@@ -27,7 +27,7 @@ window.Vue = Vue;
 
 Other dependencies of the remote component must be provided the same way; the
 Plotly component above expects a global `Plotly`, e.g., from
-https://cdn.jsdelivr.net/npm/plotly.js-basic-dist@2.35.3/plotly-basic.min.js.
+https://cdn.jsdelivr.net/npm/plotly.js-basic-dist-min@2.35.3/plotly-basic.min.js.
 
 ## Building this Package
 
