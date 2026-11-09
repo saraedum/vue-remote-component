@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vite",
+    "dev": "vite",
     "build": "vite build"
   },
   "dependencies": {
     "vue": "^3.5.45",
-    "vue-remote-component": "file:../../vue-remote-component"
+    "vue-remote-component": "*"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.10",

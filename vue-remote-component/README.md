@@ -31,27 +31,27 @@ https://cdn.jsdelivr.net/npm/plotly.js-basic-dist@2.35.3/plotly-basic.min.js.
 
 ## Building this Package
 
+This repository is a yarn workspace. From its root:
+
 ```
-cd vue-remote-component
 yarn
 yarn build
 ```
 
-To run the tests:
+To typecheck and run the tests:
 
 ```
-yarn test:unit
-yarn typecheck
+yarn test
 ```
 
 ## Demo Applications
 
-There are several (identical) demo applications. One in the source tree:
+There are several (identical) demo applications. One in the source tree,
+which rebuilds as you change the component:
 
 ```
-cd vue-remote-component
 yarn
-yarn serve
+yarn dev
 ```
 
 The other demos are mostly for the author to check that the builds actually
@@ -59,21 +59,16 @@ work. One demo uses the iife build of the package as an example how this
 package itself could be used from unpkg:
 
 ```
-cd vue-remote-component
 yarn
 yarn build
-cd ../demo/iife
-firefox index.html
+firefox demo/iife/index.html
 ```
 
 Finally, a Vite based application using the ESM build:
 
 ```
-cd vue-remote-component
 yarn
-yarn build
-cd ../demo/esm
-yarn serve
+yarn demo
 ```
 
 ## Use in Jupyter Notebooks & JupyterLab

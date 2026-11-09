@@ -1,18 +1,16 @@
 # esm
 
-## Project setup
-```
-yarn install
-```
+A Vite application using the ESM build of vue-remote-component. Run these from
+the repository root.
 
 ### Compiles and hot-reloads for development
 ```
-yarn serve
+yarn demo
 ```
 
 ### Compiles and minifies for production
 ```
-yarn build
+yarn demo:build
 ```
 
 ### Customize configuration

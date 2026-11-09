@@ -1,3 +1,3 @@
-A demo page using the local vue-remote-component directly. Call `yarn serve`
+A demo page using the local vue-remote-component directly. Call `yarn dev`
 to use this page and have it rebuild as you make changes to
 remote-component.ts.

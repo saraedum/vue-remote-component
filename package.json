@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "workspaces": [
+    "vue-remote-component",
+    "demo/esm"
+  ],
+  "scripts": {
+    "build": "yarn workspace vue-remote-component build",
+    "test": "yarn workspace vue-remote-component typecheck && yarn workspace vue-remote-component test:unit",
+    "dev": "yarn workspace vue-remote-component dev",
+    "demo": "yarn build && yarn workspace esm dev",
+    "demo:build": "yarn build && yarn workspace esm build"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}
