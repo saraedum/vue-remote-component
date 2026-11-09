@@ -1,36 +1,30 @@
 {
     "compilerOptions": {
-        "target": "es2019",
+        "target": "es2022",
         "module": "esnext",
+        "moduleResolution": "bundler",
         "strict": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "importHelpers": true,
-        "moduleResolution": "node",
-        "experimentalDecorators": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "sourceMap": true,
-        "baseUrl": ".",
+        "isolatedModules": true,
+        "skipLibCheck": true,
         "types": [
-            "node",
-            "vue",
-            "jest"
+            "node"
         ],
         "paths": {
             "@/*": [
-                "src/*"
+                "./src/*"
             ]
         },
         "lib": [
             "esnext",
             "dom",
-            "dom.iterable",
-            "scripthost"
+            "dom.iterable"
         ]
     },
-    "exclude": [
-        "node_modules",
-        "dist"
+    "include": [
+        "src",
+        "tests",
+        "vite.config.mts"
     ]
 }

@@ -1,3 +1,3 @@
-import component from './remote-component.vue';
+import component from './remote-component';
 
 export default component;

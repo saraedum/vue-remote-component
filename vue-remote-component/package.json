@@ -3,65 +3,33 @@
   "version": "1.4.1",
   "description": "",
   "scripts": {
-    "serve": "vue-cli-service serve dev/serve.ts",
-    "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
-    "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
-    "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
-    "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife",
-    "test:unit": "vue-cli-service test:unit"
+    "serve": "vite dev --config vite.config.mts dev",
+    "build": "vite build && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run"
   },
   "main": "dist/vue-remote-component.ssr.js",
   "module": "dist/vue-remote-component.esm.js",
   "browser": "dist/vue-remote-component.ssr.js",
   "unpkg": "dist/vue-remote-component.min.js",
+  "types": "dist/main.d.ts",
   "files": [
     "dist/*",
-    "vue-remote-component.d.ts",
-    "src/**/*.vue",
     "LICENSE"
   ],
-  "dependencies": {
-    "@babel/runtime": "^7.12.13",
-    "vue-class-component": "^7.2.3",
-    "vue-property-decorator": "^9.0.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
-    "@babel/preset-typescript": "^7.9.0",
-    "@rollup/plugin-alias": "^3.1.1",
-    "@rollup/plugin-babel": "^5.2.3",
-    "@rollup/plugin-commonjs": "^17.1.0",
-    "@rollup/plugin-node-resolve": "^11.1.1",
-    "@rollup/plugin-replace": "^2.3.2",
-    "@types/jest": "^27",
-    "@vue/cli": "~5.0.1",
-    "@vue/cli-plugin-babel": "~5.0.1",
-    "@vue/cli-plugin-typescript": "~5.0.1",
-    "@vue/cli-plugin-unit-jest": "~5.0.1",
-    "@vue/cli-service": "^5",
-    "@vue/test-utils": "^1",
-    "@vue/vue2-jest": "^27",
-    "babel-jest": "^27",
-    "cross-env": "^7.0.2",
-    "jest": "^27",
-    "minimist": "^1.2.5",
-    "postcss": "^8.2.6",
-    "rollup": "^2.39.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.29.0",
-    "rollup-plugin-vue": "^5.0.0",
-    "ts-jest": "^27",
-    "tslib": "^2.1.0",
-    "typescript": "~4.5.5",
-    "vue": "^2.6.11",
-    "vue-template-compiler": "^2.6.11"
-  },
   "peerDependencies": {
-    "vue": "^2.6.11"
+    "vue": "^3.5.0"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=22.12"
   },
-  "types": "vue-remote-component.d.ts"
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^31.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.7",
+    "vitest": "^5.1.0",
+    "vue": "^3.5.45"
+  }
 }

@@ -9,10 +9,25 @@ Import and register `RemoteComponent from "vue-remote-component"`, then the foll
 
 ```
 <remote-component
-  url="https://unpkg.com/vue-plotly@^1/dist/vue-plotly.umd.min.js"
+  url="https://unpkg.com/@clalarco/vue3-plotly@0.1.5/dist/plotly-vue-ts.umd.js"
+  name="VuePlotly"
   :data="[{ x: [0, 1, 2, 3], y: [1, 3, 3, 7], type: 'scatter' }]"
-  :extract="library => library.Plotly" />
+  :layout="{}"
+  :extract="library => library.VuePlotly" />
 ```
+
+This package requires Vue 3. Remote components are loaded as UMD bundles, which
+resolve their `vue` import from the global `Vue`. When Vue is not loaded as a
+`<script>`, expose it before rendering a `<remote-component>`:
+
+```
+import * as Vue from "vue";
+window.Vue = Vue;
+```
+
+Other dependencies of the remote component must be provided the same way; the
+Plotly component above expects a global `Plotly`, e.g., from
+https://cdn.jsdelivr.net/npm/plotly.js-basic-dist@2.35.3/plotly-basic.min.js.
 
 ## Building this Package
 
@@ -22,13 +37,20 @@ yarn
 yarn build
 ```
 
+To run the tests:
+
+```
+yarn test:unit
+yarn typecheck
+```
+
 ## Demo Applications
 
 There are several (identical) demo applications. One in the source tree:
 
 ```
 cd vue-remote-component
-yarn install --check-files
+yarn
 yarn serve
 ```
 
@@ -44,7 +66,7 @@ cd ../demo/iife
 firefox index.html
 ```
 
-Finally, a vue-cli based application using the ESM build:
+Finally, a Vite based application using the ESM build:
 
 ```
 cd vue-remote-component

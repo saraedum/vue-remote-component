@@ -1,13 +1,13 @@
-import { mount } from "@vue/test-utils";
-import RemoteComponent from "@/remote-component.vue";
-
-const flush = () => new Promise((resolve) => setTimeout(resolve));
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { flushPromises, mount } from "@vue/test-utils";
+import { h } from "vue";
+import RemoteComponent from "@/remote-component";
 
 // jsdom does not fetch scripts, so simulate the remote UMD bundle: when the
 // component injects its <script>, optionally define the library global, then
 // fire the corresponding event.
 function serveScript(globalName: string, library: any | null) {
-  return jest.spyOn(document.head, "appendChild").mockImplementation((node: any) => {
+  return vi.spyOn(document.head, "appendChild").mockImplementation((node: any) => {
     if (library != null)
       (window as any)[globalName] = library;
     node.dispatchEvent(new Event(library != null ? "load" : "error"));
@@ -16,14 +16,14 @@ function serveScript(globalName: string, library: any | null) {
 }
 
 describe("RemoteComponent", () => {
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   it("renders the extracted component with its props once loaded", async () => {
-    const Greeting = { props: ["who"], render(this: any, h: any): any { return h("span", `Hello ${this.who}`); } };
+    const Greeting = { props: ["who"], setup: (props: any) => () => h("span", `Hello ${props.who}`) };
     const append = serveScript("greeting", { Greeting });
 
     const wrapper = mount(RemoteComponent, {
-      propsData: {
+      props: {
         url: "https://example.com/greeting.umd.min.js",
         extract: (library: any) => library.Greeting,
         props: { who: "World" },
@@ -31,7 +31,7 @@ describe("RemoteComponent", () => {
     });
     expect(wrapper.text()).toBe("⌛");
 
-    await flush();
+    await flushPromises();
     expect(wrapper.text()).toBe("Hello World");
     expect(append.mock.calls[0][0]).toMatchObject({ src: "https://example.com/greeting.umd.min.js" });
   });
@@ -40,10 +40,10 @@ describe("RemoteComponent", () => {
     serveScript("broken", null);
 
     const wrapper = mount(RemoteComponent, {
-      propsData: { url: "https://example.com/broken.umd.js", extract: (library: any) => library },
+      props: { url: "https://example.com/broken.umd.js", extract: (library: any) => library },
     });
 
-    await flush();
+    await flushPromises();
     expect(wrapper.text()).toBe("🚫");
   });
 
@@ -51,10 +51,10 @@ describe("RemoteComponent", () => {
     const append = serveScript("unused", {});
 
     const wrapper = mount(RemoteComponent, {
-      propsData: { url: "https://example.com/plain.js", extract: (library: any) => library },
+      props: { url: "https://example.com/plain.js", extract: (library: any) => library },
     });
 
-    await flush();
+    await flushPromises();
     expect(wrapper.text()).toBe("🚫");
     expect(append).not.toHaveBeenCalled();
   });
